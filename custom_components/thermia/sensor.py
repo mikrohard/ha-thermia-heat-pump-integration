@@ -11,6 +11,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .coordinator import ThermiaDataUpdateCoordinator
 from .sensors.active_alarms_sensor import ThermiaActiveAlarmsSensor
 from .sensors.generic_sensor import ThermiaGenericSensor
+from .sensors.last_online_sensor import ThermiaLastOnlineSensor
 
 from .const import (
     DOMAIN,
@@ -394,4 +395,15 @@ async def async_setup_entry(
         for idx, _ in enumerate(coordinator.data.heat_pumps)
     ]
 
-    async_add_entities([*hass_thermia_active_alarms_sensors, *hass_thermia_sensors])
+    hass_thermia_last_online_sensors = [
+        ThermiaLastOnlineSensor(coordinator, idx)
+        for idx, _ in enumerate(coordinator.data.heat_pumps)
+    ]
+
+    async_add_entities(
+        [
+            *hass_thermia_active_alarms_sensors,
+            *hass_thermia_last_online_sensors,
+            *hass_thermia_sensors,
+        ]
+    )
