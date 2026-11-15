@@ -13,6 +13,7 @@ from ThermiaOnlineAPI import Thermia
 
 from .const import CONF_PASSWORD, CONF_USERNAME, DEBUG_ACTION_NAME, DOMAIN
 from .coordinator import ThermiaDataUpdateCoordinator
+from .request_timeout import apply_request_timeout
 from .services import ThermiaServicesSetup
 
 PLATFORMS: list[str] = ["binary_sensor", "sensor", "switch", "water_heater"]
@@ -35,6 +36,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     password = config_entry.data[CONF_PASSWORD]
 
     thermia = await hass.async_add_executor_job(lambda: Thermia(username, password))
+    apply_request_timeout(thermia)
 
     coordinator = ThermiaDataUpdateCoordinator(hass, thermia)
 
